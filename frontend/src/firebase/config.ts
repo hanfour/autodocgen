@@ -22,7 +22,13 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize services
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+// Initialize Firestore with custom database ID if specified
+const databaseId = import.meta.env.VITE_FIREBASE_DATABASE_ID;
+export const db = databaseId
+  ? getFirestore(app, databaseId)
+  : getFirestore(app);
+
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
 
