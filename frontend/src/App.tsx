@@ -22,6 +22,16 @@ import {
   EditProject,
 } from './pages/Projects';
 
+import {
+  CompanyList,
+  CompanyForm,
+} from './pages/Companies';
+
+import {
+  ContactList,
+  ContactForm,
+} from './pages/Contacts';
+
 // Import Layout Components (to be implemented)
 // import MainLayout from './components/Layout/MainLayout';
 // import AuthLayout from './components/Layout/AuthLayout';
@@ -72,17 +82,19 @@ const App: React.FC = () => {
           element={<div className="p-6">Templates Page - To be implemented</div>}
         />
 
-        {/* Companies Routes (placeholder) */}
-        <Route
-          path="/companies"
-          element={<div className="p-6">Companies Page - To be implemented</div>}
-        />
+        {/* Companies Routes */}
+        <Route path="/companies">
+          <Route index element={<CompanyList />} />
+          <Route path="new" element={<CompanyForm />} />
+          <Route path=":companyId/edit" element={<CompanyForm />} />
+        </Route>
 
-        {/* Contacts Routes (placeholder) */}
-        <Route
-          path="/contacts"
-          element={<div className="p-6">Contacts Page - To be implemented</div>}
-        />
+        {/* Contacts Routes */}
+        <Route path="/contacts">
+          <Route index element={<ContactList />} />
+          <Route path="new" element={<ContactForm />} />
+          <Route path=":contactId/edit" element={<ContactForm />} />
+        </Route>
 
         {/* Auth Routes (placeholder) */}
         <Route

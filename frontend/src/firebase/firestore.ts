@@ -100,6 +100,11 @@ export const addDocument = async <T = DocumentData>(
 };
 
 /**
+ * Create a new document (alias for addDocument)
+ */
+export const createDocument = addDocument;
+
+/**
  * Set a document (create or overwrite)
  */
 export const setDocument = async <T = DocumentData>(
