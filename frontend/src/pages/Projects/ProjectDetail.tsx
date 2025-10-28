@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
-  ArrowLeft, Edit, Download, RefreshCw, Trash2,
+  ArrowLeft, Edit, Download, RefreshCw,
   Calendar, DollarSign, Building, User, FileText,
-  Share2, Clock
+  Clock
 } from 'lucide-react';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/config';
@@ -67,12 +67,8 @@ const ProjectDetail: React.FC = () => {
 
   // Modal states
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
-
-  // Current user (would come from auth context in real app)
-  const currentUserId = 'current-user-id';
 
   useEffect(() => {
     if (projectId) {
@@ -256,7 +252,6 @@ const ProjectDetail: React.FC = () => {
               resourceType="project"
               resourceId={project.id}
               resourceName={project.project_name}
-              currentUserId={currentUserId}
               variant="secondary"
             />
             <Link

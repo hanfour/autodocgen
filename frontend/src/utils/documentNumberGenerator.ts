@@ -152,7 +152,7 @@ export function isValidDocumentNumber(documentNumber: string): boolean {
  * @param date - The date to check
  * @returns Promise<number> - Next available counter (1-999)
  */
-export async function getNextCounterForDate(date: Date): Promise<number> {
+export async function getNextCounterForDate(_date: Date): Promise<number> {
   // This is a client-side stub
   // The actual implementation should be on the backend (Cloud Function)
   // to ensure atomicity and avoid race conditions

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Save, X, AlertCircle, Loader } from 'lucide-react';
 import { getDocument, updateDocument, getDocuments } from '../../firebase/firestore';
-import { buildQuery } from '../../firebase/firestore';
 
 interface Company {
   id: string;
@@ -53,7 +52,6 @@ const EditProject: React.FC = () => {
 
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
     reset,

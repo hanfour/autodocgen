@@ -8,7 +8,6 @@ interface ShareDialogProps {
   resourceType: 'project' | 'template' | 'company' | 'contact';
   resourceId: string;
   resourceName: string;
-  currentUserId: string;
   onShareUpdate?: () => void;
 }
 
@@ -18,7 +17,6 @@ const ShareDialog: React.FC<ShareDialogProps> = ({
   resourceType,
   resourceId,
   resourceName,
-  currentUserId,
   onShareUpdate,
 }) => {
   const [email, setEmail] = useState('');
@@ -113,23 +111,6 @@ const ShareDialog: React.FC<ShareDialogProps> = ({
     }
   };
 
-  const getRoleBadgeClass = (role: AccessRole): string => {
-    const classes: Record<AccessRole, string> = {
-      owner: 'bg-primary-100 text-primary-800',
-      member: 'bg-info-100 text-info-800',
-      viewer: 'bg-gray-100 text-gray-800',
-    };
-    return classes[role];
-  };
-
-  const getRoleDescription = (role: AccessRole): string => {
-    const descriptions: Record<AccessRole, string> = {
-      owner: 'Full control - can delete',
-      member: 'Can edit and view',
-      viewer: 'Can only view',
-    };
-    return descriptions[role];
-  };
 
   if (!isOpen) return null;
 

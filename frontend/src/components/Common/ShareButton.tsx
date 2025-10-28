@@ -6,7 +6,6 @@ interface ShareButtonProps {
   resourceType: 'project' | 'template' | 'company' | 'contact';
   resourceId: string;
   resourceName: string;
-  currentUserId: string;
   onShareUpdate?: () => void;
   variant?: 'primary' | 'secondary' | 'icon';
   className?: string;
@@ -21,7 +20,6 @@ interface ShareButtonProps {
  *   resourceType="project"
  *   resourceId={project.id}
  *   resourceName={project.project_name}
- *   currentUserId={currentUser.uid}
  *   onShareUpdate={() => refetchProject()}
  * />
  * ```
@@ -30,7 +28,6 @@ const ShareButton: React.FC<ShareButtonProps> = ({
   resourceType,
   resourceId,
   resourceName,
-  currentUserId,
   onShareUpdate,
   variant = 'secondary',
   className = '',
@@ -69,7 +66,6 @@ const ShareButton: React.FC<ShareButtonProps> = ({
         resourceType={resourceType}
         resourceId={resourceId}
         resourceName={resourceName}
-        currentUserId={currentUserId}
         onShareUpdate={onShareUpdate}
       />
     </>
