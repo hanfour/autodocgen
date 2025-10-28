@@ -32,9 +32,8 @@ import {
   ContactForm,
 } from './pages/Contacts';
 
-// Import Layout Components (to be implemented)
-// import MainLayout from './components/Layout/MainLayout';
-// import AuthLayout from './components/Layout/AuthLayout';
+// Import Layout Components
+import { MainLayout } from './components/Layout';
 
 // Import Auth Hook (to be implemented)
 // import { useAuth } from './hooks/useAuth';
@@ -65,38 +64,46 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root - Redirect to projects for now */}
+        {/* Root - Redirect to projects */}
         <Route path="/" element={<Navigate to="/projects" replace />} />
 
-        {/* Projects Routes */}
-        <Route path="/projects">
-          <Route index element={<ProjectList />} />
-          <Route path="new" element={<CreateProject />} />
-          <Route path=":projectId" element={<ProjectDetail />} />
-          <Route path=":projectId/edit" element={<EditProject />} />
+        {/* Main App with Layout */}
+        <Route element={<MainLayout />}>
+          {/* Projects Routes */}
+          <Route path="/projects">
+            <Route index element={<ProjectList />} />
+            <Route path="new" element={<CreateProject />} />
+            <Route path=":projectId" element={<ProjectDetail />} />
+            <Route path=":projectId/edit" element={<EditProject />} />
+          </Route>
+
+          {/* Companies Routes */}
+          <Route path="/companies">
+            <Route index element={<CompanyList />} />
+            <Route path="new" element={<CompanyForm />} />
+            <Route path=":companyId/edit" element={<CompanyForm />} />
+          </Route>
+
+          {/* Contacts Routes */}
+          <Route path="/contacts">
+            <Route index element={<ContactList />} />
+            <Route path="new" element={<ContactForm />} />
+            <Route path=":contactId/edit" element={<ContactForm />} />
+          </Route>
+
+          {/* Templates Routes (placeholder) */}
+          <Route
+            path="/templates"
+            element={
+              <div className="p-6">
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">模板管理</h1>
+                <p className="text-gray-600">功能开发中...</p>
+              </div>
+            }
+          />
         </Route>
 
-        {/* Templates Routes (placeholder) */}
-        <Route
-          path="/templates"
-          element={<div className="p-6">Templates Page - To be implemented</div>}
-        />
-
-        {/* Companies Routes */}
-        <Route path="/companies">
-          <Route index element={<CompanyList />} />
-          <Route path="new" element={<CompanyForm />} />
-          <Route path=":companyId/edit" element={<CompanyForm />} />
-        </Route>
-
-        {/* Contacts Routes */}
-        <Route path="/contacts">
-          <Route index element={<ContactList />} />
-          <Route path="new" element={<ContactForm />} />
-          <Route path=":contactId/edit" element={<ContactForm />} />
-        </Route>
-
-        {/* Auth Routes (placeholder) */}
+        {/* Auth Routes (no layout) */}
         <Route
           path="/login"
           element={<div className="p-6">Login Page - To be implemented</div>}
