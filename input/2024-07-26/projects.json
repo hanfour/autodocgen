@@ -1,0 +1,31 @@
+[
+    {
+        "project_name": "光曜",
+        "company_name": "海悅國際開發股份有限公司",
+        "contacts": "",
+        "date": "2024-05-07",
+        "price": 35000
+    },
+    {
+        "project_name": "川晴青青",
+        "company_name": "海樺廣告股份有限公司",
+        "contacts": "吳浩唯",
+        "date": "2024-06-27",
+        "price": 35000
+    },
+    {
+        "project_name": "力璞水御",
+        "company_name": "海悅廣告股份有限公司",
+        "contacts": "陳柏宇",
+        "date": "2024-06-20",
+        "price": 35000,
+        "contact_data": "2024-06-20"
+    },
+    {
+        "project_name": "國美榕遇",
+        "company_name": "好漾廣告股份有限公司",
+        "contacts": "陳為廷",
+        "date": "2024-06-20",
+        "price": 35000
+    }
+]

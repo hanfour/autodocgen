@@ -1,0 +1,10 @@
+[
+    {
+        "project_name": "建案名稱",
+        "company_name": "發票對象名稱",
+        "contacts": "聯絡人",
+        "date": "yyyy-mm-dd",
+        "contact_date": "yyyy-mm-dd",
+        "price": 30000
+    }
+]

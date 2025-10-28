@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <title>上傳模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">上傳模板</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-4 p-4 bg-blue-100 text-blue-800 rounded">
+        {% for message in messages %}
+          <div>{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="mb-6">
+        <h2 class="font-semibold mb-2">模板設計說明</h2>
+        <p class="mb-2">請在您的 Word 模板中，使用 <code>{{ '{{欄位名}}' }}</code> 的格式來標示要替換的欄位。</p>
+        <p class="mb-2">例如：</p>
+        <pre class="bg-gray-100 p-2 rounded">
+專案名稱：{{ '{{project_name}}' }}
+公司名稱：{{ '{{company_name}}' }}
+報價：{{ '{{price}}' }}
+聯絡人：{{ '{{contacts}}' }}
+        </pre>
+        <p>系統會自動偵測這些佔位符，並在批次產生文件時替換成對應資料。</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="mb-4 space-y-4">
+        <input type="file" name="file" accept=".docx" class="block w-full border rounded p-2" required>
+        <div class="flex space-x-2">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">上傳</button>
+            <a href="{{ url_for('index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">回首頁</a>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Firebase Functions dependencies
+firebase-functions>=0.4.0
+firebase-admin>=6.2.0
+
+# Document processing
+python-docx>=1.1.0
+
+# Google Cloud dependencies
+google-cloud-firestore>=2.13.0
+google-cloud-storage>=2.10.0
+
+# Utilities
+python-dateutil>=2.8.2

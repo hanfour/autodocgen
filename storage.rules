@@ -1,0 +1,47 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function hasProjectAccess(projectId) {
+      return firestore.get(/databases/(default)/documents/projects/$(projectId))
+        .data.created_by == request.auth.uid ||
+        firestore.get(/databases/(default)/documents/projects/$(projectId))
+        .data.shared_with[request.auth.uid] != null;
+    }
+
+    // Templates (authenticated users can read/write)
+    match /templates/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Templates with subdirectories (templateId/fileName)
+    match /templates/{templateId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Project documents (only users with project access)
+    match /documents/{projectId}/{allPaths=**} {
+      allow read: if isAuthenticated() && hasProjectAccess(projectId);
+      allow write: if isAuthenticated() && hasProjectAccess(projectId);
+    }
+
+    // Company logos
+    match /company-logos/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // User avatars
+    match /user-avatars/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == fileName.split('.')[0];
+    }
+  }
+}

@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Styles */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+  }
+
+  * {
+    @apply border-gray-200;
+  }
+
+  h1 {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold text-gray-900;
+  }
+
+  h3 {
+    @apply text-xl font-semibold text-gray-900;
+  }
+
+  h4 {
+    @apply text-lg font-medium text-gray-900;
+  }
+
+  p {
+    @apply text-gray-600;
+  }
+
+  a {
+    @apply text-primary-600 hover:text-primary-700 transition-colors;
+  }
+}
+
+/* Custom Component Styles */
+@layer components {
+  /* Card Component */
+  .card {
+    @apply bg-white rounded-lg shadow-card p-6 border border-gray-100;
+  }
+
+  .card-hover {
+    @apply card transition-all hover:shadow-lg cursor-pointer;
+  }
+
+  /* Button Styles */
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+  }
+
+  .btn-danger {
+    @apply btn bg-error-600 text-white hover:bg-error-700 focus:ring-error-500;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-lg;
+  }
+
+  /* Input Styles */
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all;
+  }
+
+  .input-error {
+    @apply input border-error-500 focus:ring-error-500;
+  }
+
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-draft {
+    @apply badge bg-gray-100 text-gray-800;
+  }
+
+  .badge-in-progress {
+    @apply badge bg-info-100 text-info-800;
+  }
+
+  .badge-paused {
+    @apply badge bg-warning-100 text-warning-800;
+  }
+
+  .badge-pending-invoice {
+    @apply badge bg-primary-100 text-primary-800;
+  }
+
+  .badge-pending-payment {
+    @apply badge bg-warning-100 text-warning-800;
+  }
+
+  .badge-completed {
+    @apply badge bg-success-100 text-success-800;
+  }
+
+  /* Sidebar Styles */
+  .sidebar-link {
+    @apply flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  .sidebar-link-active {
+    @apply sidebar-link bg-primary-50 text-primary-600 font-medium;
+  }
+
+  /* Table Styles */
+  .table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+
+  .table-header {
+    @apply bg-gray-50;
+  }
+
+  .table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .table-body {
+    @apply bg-white divide-y divide-gray-200;
+  }
+
+  .table-row {
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+  }
+
+  /* Modal Overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto;
+  }
+
+  /* Toast Notification */
+  .toast {
+    @apply fixed bottom-4 right-4 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in;
+  }
+
+  .toast-success {
+    @apply toast bg-success-600 text-white;
+  }
+
+  .toast-error {
+    @apply toast bg-error-600 text-white;
+  }
+
+  .toast-warning {
+    @apply toast bg-warning-600 text-white;
+  }
+
+  .toast-info {
+    @apply toast bg-info-600 text-white;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    @apply inline-block w-8 h-8 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin;
+  }
+
+  /* Stats Card (Dashboard) */
+  .stats-card {
+    @apply card hover:shadow-lg transition-all cursor-pointer;
+  }
+
+  .stats-card-value {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  .stats-card-label {
+    @apply text-sm text-gray-600 mt-1;
+  }
+
+  .stats-card-change {
+    @apply text-xs font-medium mt-2;
+  }
+
+  .stats-card-change-positive {
+    @apply stats-card-change text-success-600;
+  }
+
+  .stats-card-change-negative {
+    @apply stats-card-change text-error-600;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scrollbar Styles */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+/* Code Syntax Highlighting */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    @apply bg-white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
