@@ -17,6 +17,7 @@ from .documents.regenerate import regenerate_document
 from .templates.analyze import analyze_template
 from .projects.create import create_project
 from .projects.update_status import update_project_status
+from .template_functions import extract_template_variables, generate_document
 
 # Export functions
 __all__ = [
@@ -25,4 +26,6 @@ __all__ = [
     'analyze_template',
     'create_project',
     'update_project_status',
+    'extract_template_variables',
+    'generate_document',
 ]

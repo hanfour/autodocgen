@@ -4,6 +4,8 @@ firebase-admin>=6.2.0
 
 # Document processing
 python-docx>=1.1.0
+pypdf2>=3.0.0
+reportlab>=4.0.0
 
 # Google Cloud dependencies
 google-cloud-firestore>=2.13.0
