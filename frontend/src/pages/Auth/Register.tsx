@@ -54,6 +54,9 @@ const Register: React.FC = () => {
 
     try {
       await signUp(email, password, displayName);
+      // Show success message before redirecting
+      setError('');
+      alert('註冊成功！驗證郵件已發送到您的信箱，請查收並點擊連結完成驗證。');
       navigate('/projects');
     } catch (err: any) {
       console.error('Register error:', err);

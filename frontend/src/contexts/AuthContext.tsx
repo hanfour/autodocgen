@@ -13,10 +13,12 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 import { getDocument } from '../firebase/firestore';
+import { ActivityLogger } from '../utils/activityLogger';
 
 interface UserProfile {
   uid: string;
@@ -85,12 +87,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Update display name
       await updateProfile(firebaseUser, { displayName });
 
+      // Send email verification
+      await sendEmailVerification(firebaseUser);
+
       // Create user profile in Firestore
       const userDocRef = doc(db, 'users', firebaseUser.uid);
       const profileData = {
         uid: firebaseUser.uid,
         email: firebaseUser.email!,
         display_name: displayName,
+        email_verified: false,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
       };
@@ -106,6 +112,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         updated_at: new Date(),
       };
       setUserProfile(profile);
+
+      // Log registration activity
+      ActivityLogger.userRegister();
     } catch (error) {
       console.error('Sign up error:', error);
       throw error;
@@ -115,6 +124,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signIn = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+
+      // Log login activity
+      ActivityLogger.userLogin();
     } catch (error) {
       console.error('Sign in error:', error);
       throw error;

@@ -15,6 +15,7 @@ import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/config';
 import { User, Camera, Save, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
+import { ActivityLogger } from '../../utils/activityLogger';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -119,6 +120,9 @@ const Profile: React.FC = () => {
 
       setMessage({ type: 'success', text: '個人資料更新成功！' });
       setAvatarFile(null);
+
+      // Log profile update activity
+      ActivityLogger.profileUpdated();
 
       // Reload to update context
       setTimeout(() => {

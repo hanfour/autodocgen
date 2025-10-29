@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Save, X, ArrowLeft } from 'lucide-react';
 import { getDocument, createDocument, updateDocument } from '../../firebase/firestore';
+import { ActivityLogger } from '../../utils/activityLogger';
 
 interface CompanyFormData {
   company_name: string;
@@ -63,11 +64,13 @@ const CompanyForm: React.FC = () => {
 
       if (isEdit) {
         await updateDocument('companies', companyId!, companyData);
+        ActivityLogger.companyUpdated(data.company_name, companyId!);
       } else {
-        await createDocument('companies', {
+        const newId = await createDocument('companies', {
           ...companyData,
           created_at: new Date(),
         });
+        ActivityLogger.companyCreated(data.company_name, newId);
       }
 
       navigate('/companies');

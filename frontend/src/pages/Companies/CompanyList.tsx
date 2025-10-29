@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Building, Phone, Mail, MapPin, Edit, Trash2 } from 'lucide-react';
 import { getDocuments, deleteDocument } from '../../firebase/firestore';
+import { ActivityLogger } from '../../utils/activityLogger';
 
 interface Company {
   id: string;
@@ -43,7 +44,13 @@ const CompanyList: React.FC = () => {
     }
 
     try {
+      const company = companies.find((c) => c.id === id);
       await deleteDocument('companies', id);
+
+      if (company) {
+        ActivityLogger.companyDeleted(company.company_name, id);
+      }
+
       setCompanies(companies.filter(c => c.id !== id));
       setDeleteConfirm(null);
     } catch (error) {
