@@ -7,33 +7,20 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isOwner(resource) {
-      return request.auth.uid == resource.data.created_by;
-    }
-
-    function hasAccess(resource, requiredRole) {
-      let userRole = resource.data.shared_with[request.auth.uid];
-      return isOwner(resource) ||
-             (userRole != null &&
-              (requiredRole == 'viewer' ||
-               (requiredRole == 'member' && userRole in ['member', 'owner']) ||
-               (requiredRole == 'owner' && userRole == 'owner')));
-    }
-
-    // Projects
+    // Projects - Authenticated users can access
     match /projects/{projectId} {
-      allow read: if isAuthenticated() && hasAccess(resource, 'viewer');
+      allow read: if isAuthenticated();
       allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && hasAccess(resource, 'member');
-      allow delete: if isAuthenticated() && hasAccess(resource, 'owner');
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
 
-    // Templates
+    // Templates - Authenticated users can access
     match /templates/{templateId} {
-      allow read: if isAuthenticated() && resource.data.is_active == true;
+      allow read: if isAuthenticated();
       allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && hasAccess(resource, 'member');
-      allow delete: if isAuthenticated() && hasAccess(resource, 'owner');
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
 
     // Companies - Authenticated users can access
