@@ -35,6 +35,9 @@ const CompanyForm = lazy(() => import('./pages/Companies/CompanyForm'));
 const ContactList = lazy(() => import('./pages/Contacts/ContactList'));
 const ContactForm = lazy(() => import('./pages/Contacts/ContactForm'));
 
+const TemplateList = lazy(() => import('./pages/Templates/TemplateList'));
+const TemplateForm = lazy(() => import('./pages/Templates/TemplateForm'));
+
 const MainLayout = lazy(() => import('./components/Layout/MainLayout'));
 
 // Loading fallback component
@@ -116,16 +119,12 @@ const App: React.FC = () => {
               <Route path=":contactId/edit" element={<ContactForm />} />
             </Route>
 
-            {/* Templates Routes (placeholder) */}
-            <Route
-              path="/templates"
-              element={
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-4">模板管理</h1>
-                  <p className="text-gray-600">功能开发中...</p>
-                </div>
-              }
-            />
+            {/* Templates Routes */}
+            <Route path="/templates">
+              <Route index element={<TemplateList />} />
+              <Route path="new" element={<TemplateForm />} />
+              <Route path=":templateId/edit" element={<TemplateForm />} />
+            </Route>
 
             {/* Profile Route */}
             <Route path="/profile" element={<Profile />} />
