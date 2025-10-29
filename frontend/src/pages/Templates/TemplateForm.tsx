@@ -7,8 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Save, X, ArrowLeft, Trash2 } from 'lucide-react';
+import { Save, X, ArrowLeft, Trash2, Upload, FileText } from 'lucide-react';
 import { getDocument, createDocument, updateDocument } from '../../firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../firebase/config';
 import { ActivityLogger } from '../../utils/activityLogger';
 
 interface TemplateFormData {
@@ -17,6 +19,7 @@ interface TemplateFormData {
   description?: string;
   content: string;
   is_active: boolean;
+  source_type: 'text' | 'file';
 }
 
 const TemplateForm: React.FC = () => {
@@ -28,6 +31,9 @@ const TemplateForm: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [variables, setVariables] = useState<string[]>([]);
+  const [templateFile, setTemplateFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState<string>('');
+  const [sourceType, setSourceType] = useState<'text' | 'file'>('text');
   const {
     register,
     handleSubmit,
@@ -37,6 +43,7 @@ const TemplateForm: React.FC = () => {
   } = useForm<TemplateFormData>({
     defaultValues: {
       is_active: true,
+      source_type: 'text',
     },
   });
 
@@ -70,8 +77,11 @@ const TemplateForm: React.FC = () => {
           description: data.description,
           content: data.content,
           is_active: data.is_active ?? true,
+          source_type: data.source_type || 'text',
         });
         setVariables(data.variables || []);
+        setSourceType(data.source_type || 'text');
+        setFileUrl(data.file_url || '');
       }
     } catch (err: any) {
       console.error('Error loading template:', err);
@@ -81,13 +91,61 @@ const TemplateForm: React.FC = () => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/msword',
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        setError('只支持 PDF 或 Word 文檔（.pdf, .docx, .doc）');
+        return;
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError('文件大小不能超過 10MB');
+        return;
+      }
+
+      setTemplateFile(file);
+      setError('');
+    }
+  };
+
+  const uploadTemplateFile = async (): Promise<string> => {
+    if (!templateFile) return fileUrl;
+
+    const timestamp = Date.now();
+    const filename = `templates/${timestamp}_${templateFile.name}`;
+    const storageRef = ref(storage, filename);
+
+    await uploadBytes(storageRef, templateFile);
+    const downloadURL = await getDownloadURL(storageRef);
+
+    return downloadURL;
+  };
+
   const onSubmit = async (data: TemplateFormData) => {
     try {
       setSaving(true);
       setError('');
 
+      // Upload file if source_type is 'file'
+      let uploadedFileUrl = fileUrl;
+      if (sourceType === 'file' && templateFile) {
+        uploadedFileUrl = await uploadTemplateFile();
+      }
+
       const templateData = {
         ...data,
+        source_type: sourceType,
+        file_url: sourceType === 'file' ? uploadedFileUrl : null,
+        file_name: sourceType === 'file' && templateFile ? templateFile.name : null,
         variables,
         updated_at: new Date(),
       };
@@ -220,6 +278,45 @@ const TemplateForm: React.FC = () => {
                   )}
                 </div>
 
+                {/* Source Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    模板來源 <span className="text-error-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSourceType('text')}
+                      className={`p-4 border-2 rounded-lg transition-all ${
+                        sourceType === 'text'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <FileText className={`w-6 h-6 mx-auto mb-2 ${sourceType === 'text' ? 'text-primary-600' : 'text-gray-400'}`} />
+                      <p className={`text-sm font-medium ${sourceType === 'text' ? 'text-primary-900' : 'text-gray-700'}`}>
+                        文字模板
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">在線編輯純文本</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSourceType('file')}
+                      className={`p-4 border-2 rounded-lg transition-all ${
+                        sourceType === 'file'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <Upload className={`w-6 h-6 mx-auto mb-2 ${sourceType === 'file' ? 'text-primary-600' : 'text-gray-400'}`} />
+                      <p className={`text-sm font-medium ${sourceType === 'file' ? 'text-primary-900' : 'text-gray-700'}`}>
+                        上傳文檔
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">Word 或 PDF</p>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">說明</label>
@@ -245,26 +342,74 @@ const TemplateForm: React.FC = () => {
 
             {/* Content Card */}
             <div className="card">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">模板內容</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                {sourceType === 'file' ? '上傳模板文檔' : '模板內容'}
+              </h2>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  內容 <span className="text-error-500">*</span>
-                </label>
-                <p className="text-sm text-gray-500 mb-2">
-                  使用 <code className="px-1 bg-gray-100 rounded">{'{{變量名稱}}'}</code>{' '}
-                  來插入變量
-                </p>
-                <textarea
-                  {...register('content', { required: '請輸入模板內容' })}
-                  className="input-field resize-none font-mono text-sm"
-                  rows={15}
-                  placeholder="例如：親愛的 {{客戶名稱}}，感謝您選擇我們的 {{服務名稱}} 服務..."
-                />
-                {errors.content && (
-                  <p className="mt-1 text-sm text-error-600">{errors.content.message}</p>
-                )}
-              </div>
+              {sourceType === 'file' ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    選擇文檔 <span className="text-error-500">*</span>
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="template-file"
+                    />
+                    <label htmlFor="template-file" className="cursor-pointer">
+                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      {templateFile || fileUrl ? (
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 mb-1">
+                            {templateFile ? templateFile.name : '已上傳文檔'}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {templateFile
+                              ? `${(templateFile.size / 1024 / 1024).toFixed(2)} MB`
+                              : '點擊更換文檔'}
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 mb-1">
+                            點擊上傳或拖放文檔
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            支持 PDF、Word 文檔（.pdf, .docx, .doc）
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">最大 10MB</p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    💡 在文檔中使用 <code className="px-1 bg-gray-100 rounded">{'{{變量名稱}}'}</code>{' '}
+                    標記需要替換的內容
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    內容 <span className="text-error-500">*</span>
+                  </label>
+                  <p className="text-sm text-gray-500 mb-2">
+                    使用 <code className="px-1 bg-gray-100 rounded">{'{{變量名稱}}'}</code>{' '}
+                    來插入變量
+                  </p>
+                  <textarea
+                    {...register('content', { required: sourceType === 'text' ? '請輸入模板內容' : false })}
+                    className="input-field resize-none font-mono text-sm"
+                    rows={15}
+                    placeholder="例如：親愛的 {{客戶名稱}}，感謝您選擇我們的 {{服務名稱}} 服務..."
+                  />
+                  {errors.content && (
+                    <p className="mt-1 text-sm text-error-600">{errors.content.message}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
