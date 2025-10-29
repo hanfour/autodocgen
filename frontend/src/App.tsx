@@ -32,8 +32,17 @@ import {
   ContactForm,
 } from './pages/Contacts';
 
+import {
+  Login,
+  Register,
+} from './pages/Auth';
+
 // Import Layout Components
 import { MainLayout } from './components/Layout';
+
+// Import Auth Components
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Import Auth Hook (to be implemented)
 // import { useAuth } from './hooks/useAuth';
@@ -63,72 +72,74 @@ import { MainLayout } from './components/Layout';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Root - Redirect to projects */}
-        <Route path="/" element={<Navigate to="/projects" replace />} />
+      <AuthProvider>
+        <Routes>
+          {/* Auth Routes (no layout, public) */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Main App with Layout */}
-        <Route element={<MainLayout />}>
-          {/* Projects Routes */}
-          <Route path="/projects">
-            <Route index element={<ProjectList />} />
-            <Route path="new" element={<CreateProject />} />
-            <Route path=":projectId" element={<ProjectDetail />} />
-            <Route path=":projectId/edit" element={<EditProject />} />
-          </Route>
+          {/* Root - Redirect to projects */}
+          <Route path="/" element={<Navigate to="/projects" replace />} />
 
-          {/* Companies Routes */}
-          <Route path="/companies">
-            <Route index element={<CompanyList />} />
-            <Route path="new" element={<CompanyForm />} />
-            <Route path=":companyId/edit" element={<CompanyForm />} />
-          </Route>
-
-          {/* Contacts Routes */}
-          <Route path="/contacts">
-            <Route index element={<ContactList />} />
-            <Route path="new" element={<ContactForm />} />
-            <Route path=":contactId/edit" element={<ContactForm />} />
-          </Route>
-
-          {/* Templates Routes (placeholder) */}
+          {/* Protected Routes with Layout */}
           <Route
-            path="/templates"
             element={
-              <div className="p-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">模板管理</h1>
-                <p className="text-gray-600">功能开发中...</p>
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            {/* Projects Routes */}
+            <Route path="/projects">
+              <Route index element={<ProjectList />} />
+              <Route path="new" element={<CreateProject />} />
+              <Route path=":projectId" element={<ProjectDetail />} />
+              <Route path=":projectId/edit" element={<EditProject />} />
+            </Route>
+
+            {/* Companies Routes */}
+            <Route path="/companies">
+              <Route index element={<CompanyList />} />
+              <Route path="new" element={<CompanyForm />} />
+              <Route path=":companyId/edit" element={<CompanyForm />} />
+            </Route>
+
+            {/* Contacts Routes */}
+            <Route path="/contacts">
+              <Route index element={<ContactList />} />
+              <Route path="new" element={<ContactForm />} />
+              <Route path=":contactId/edit" element={<ContactForm />} />
+            </Route>
+
+            {/* Templates Routes (placeholder) */}
+            <Route
+              path="/templates"
+              element={
+                <div className="p-6">
+                  <h1 className="text-3xl font-bold text-gray-900 mb-4">模板管理</h1>
+                  <p className="text-gray-600">功能开发中...</p>
+                </div>
+              }
+            />
+          </Route>
+
+          {/* 404 Not Found */}
+          <Route
+            path="*"
+            element={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+                  <p className="text-gray-600 mb-6">Page not found</p>
+                  <a href="/projects" className="btn-primary">
+                    Go to Projects
+                  </a>
+                </div>
               </div>
             }
           />
-        </Route>
-
-        {/* Auth Routes (no layout) */}
-        <Route
-          path="/login"
-          element={<div className="p-6">Login Page - To be implemented</div>}
-        />
-        <Route
-          path="/register"
-          element={<div className="p-6">Register Page - To be implemented</div>}
-        />
-
-        {/* 404 Not Found */}
-        <Route
-          path="*"
-          element={
-            <div className="flex items-center justify-center min-h-screen">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-                <p className="text-gray-600 mb-6">Page not found</p>
-                <a href="/projects" className="btn-primary">
-                  Go to Projects
-                </a>
-              </div>
-            </div>
-          }
-        />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 };

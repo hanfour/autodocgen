@@ -36,20 +36,20 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && hasAccess(resource, 'owner');
     }
 
-    // Companies
+    // Companies - Authenticated users can access
     match /companies/{companyId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && hasAccess(resource, 'member');
-      allow delete: if isAuthenticated() && hasAccess(resource, 'owner');
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
 
-    // Contacts
+    // Contacts - Authenticated users can access
     match /contacts/{contactId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && hasAccess(resource, 'member');
-      allow delete: if isAuthenticated() && hasAccess(resource, 'owner');
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
 
     // Users
