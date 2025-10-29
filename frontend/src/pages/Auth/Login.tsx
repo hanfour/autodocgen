@@ -129,6 +129,16 @@ const Login: React.FC = () => {
               </div>
             </div>
 
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-indigo-600 hover:text-indigo-500"
+              >
+                忘記密碼？
+              </Link>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"

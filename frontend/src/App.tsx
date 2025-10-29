@@ -11,38 +11,41 @@
  * - Protected routes (optional)
  */
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Import Pages
-import {
-  ProjectList,
-  CreateProject,
-  ProjectDetail,
-  EditProject,
-} from './pages/Projects';
-
-import {
-  CompanyList,
-  CompanyForm,
-} from './pages/Companies';
-
-import {
-  ContactList,
-  ContactForm,
-} from './pages/Contacts';
-
-import {
-  Login,
-  Register,
-} from './pages/Auth';
-
-// Import Layout Components
-import { MainLayout } from './components/Layout';
-
-// Import Auth Components
+// Import Auth Components (needed immediately)
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy load pages for code splitting
+const Login = lazy(() => import('./pages/Auth/Login'));
+const Register = lazy(() => import('./pages/Auth/Register'));
+const Profile = lazy(() => import('./pages/Auth/Profile'));
+const ForgotPassword = lazy(() => import('./pages/Auth/ForgotPassword'));
+
+const ProjectList = lazy(() => import('./pages/Projects/ProjectList'));
+const CreateProject = lazy(() => import('./pages/Projects/CreateProject'));
+const ProjectDetail = lazy(() => import('./pages/Projects/ProjectDetail'));
+const EditProject = lazy(() => import('./pages/Projects/EditProject'));
+
+const CompanyList = lazy(() => import('./pages/Companies/CompanyList'));
+const CompanyForm = lazy(() => import('./pages/Companies/CompanyForm'));
+
+const ContactList = lazy(() => import('./pages/Contacts/ContactList'));
+const ContactForm = lazy(() => import('./pages/Contacts/ContactForm'));
+
+const MainLayout = lazy(() => import('./components/Layout/MainLayout'));
+
+// Loading fallback component
+const LoadingFallback: React.FC = () => (
+  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="text-center">
+      <div className="inline-block w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p className="text-gray-600">載入中...</p>
+    </div>
+  </div>
+);
 
 // Import Auth Hook (to be implemented)
 // import { useAuth } from './hooks/useAuth';
@@ -73,10 +76,12 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Auth Routes (no layout, public) */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Auth Routes (no layout, public) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Root - Redirect to projects */}
           <Route path="/" element={<Navigate to="/projects" replace />} />
@@ -121,6 +126,9 @@ const App: React.FC = () => {
                 </div>
               }
             />
+
+            {/* Profile Route */}
+            <Route path="/profile" element={<Profile />} />
           </Route>
 
           {/* 404 Not Found */}
@@ -138,7 +146,8 @@ const App: React.FC = () => {
               </div>
             }
           />
-        </Routes>
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );

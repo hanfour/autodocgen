@@ -70,9 +70,17 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                )}
                 <span className="hidden md:block text-sm font-medium text-gray-700">
                   {userProfile?.display_name || user.email?.split('@')[0]}
                 </span>
@@ -93,6 +101,16 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                       </p>
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate('/profile');
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      個人資料
+                    </button>
                     <button
                       onClick={handleSignOut}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
